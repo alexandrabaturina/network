@@ -1,5 +1,16 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    TODO
+    {% for post in posts %}
+        <div class="card">
+            <p class="card-header"> <strong> {{ post.user }} </strong> on {{ post.timestamp }} </p>
+            <div class="card-body">
+                <p class="card-text"> {{ post.content }} </p>
+                <p class="card-text"> Likes: {{ post.likes }} </p>
+                <a href="#" class="btn btn-primary">Like</a>
+            </div>
+        </div>
+    {% empty %}
+        <p> No posts yet.</p>
+    {% endfor %}
 {% endblock %}

@@ -7,20 +7,50 @@ from django.core.paginator import Paginator
 
 from .models import User, Post
 
-import math
+from datetime import datetime
 
+
+def add_post(user, content, timestamp):
+    new_post = Post (
+        user = user,
+        content = content,
+        timestamp = timestamp,
+    )
+    new_post.save()
 
 def index(request):
-    posts =  Post.objects.all()
+    posted = ''
+    if request.session.has_key('posted'):
+        posted = request.session.get('posted')
+        del request.session['posted']
 
+    posts =  Post.objects.all()
     # Show 10 post per page
     paginator = Paginator(posts, 10)
     current_page = request.GET.get('page')
     page_posts = paginator.get_page(current_page)
     return render(request, "network/index.html", {
         "page_posts": page_posts,
+        "posted": posted
     })
 
+
+def new_post(request):
+    empty_post = ''
+    if request.method == "POST":
+        if request.POST.get("post-button"):
+            if request.POST.get("post-content"):
+                content = request.POST.get("post-content")
+                timestamp = datetime.now()
+                add_post(request.user, content, timestamp)
+                request.session['posted'] = "Your post was successfully saved."
+                return HttpResponseRedirect(reverse("index"))
+            else:
+                empty_post = "You are trying to submit an empty post. Please enter the content of your post."
+    return render(request, "network/new_post.html", {
+        "user": request.user,
+        "empty_post": empty_post
+    })
 
 def login_view(request):
     if request.method == "POST":

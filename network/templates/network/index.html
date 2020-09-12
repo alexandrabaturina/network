@@ -2,6 +2,14 @@
 
 {% block body %}
 
+{% if user.is_authenticated %}
+    <a href="{% url 'new_post' %}"> New Post </a>
+{% endif %}
+
+    {% if posted %}
+        <div class="alert alert-success" role="alert"> {{ posted }} </div>
+    {% endif %}
+
     {% for post in page_posts %}
         <div class="card">
             <p class="card-header"> <strong> {{ post.user }} </strong> on {{ post.timestamp }} </p>

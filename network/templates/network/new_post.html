@@ -1,0 +1,18 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+    {% if user.is_authenticated %}
+
+        {% if empty_post %}
+            <div class="alert alert-danger" role="alert"> {{ empty_post }} </div>
+        {% endif %}
+
+        <form action="" method="post">
+            {% csrf_token %}
+            <textarea name="post-content" rows="5" placeholder="What's on your mind, {{ user }}?"></textarea>
+            <input type="submit" value="Post" name="post-button" class="btn btn-primary">
+        </form>
+    {% endif %}
+
+{% endblock %}

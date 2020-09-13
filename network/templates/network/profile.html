@@ -1,0 +1,29 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+
+
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title"> {{ username }} </h2>
+            <p class="card-text"> Followers: </p>
+            <p class="card-text">Following: </p>
+        </div>
+    </div>
+
+    {% for post in user_posts %}
+        <div class="card">
+            <p class="card-header"> <strong><a href="{% url 'profile' post.user %}"> {{ post.user }} </a></strong> on {{ post.timestamp }} </p>
+                <div class="card-body">
+                    <p class="card-text"> {{ post.content }} </p>
+                    <p class="card-text"> Likes: {{ post.likes }} </p>
+                    <a href="#" class="btn btn-primary">Like</a>
+                    {% if post in user_posts %}
+                        <p> You can edit this post!</p>
+                    {% endif %}
+                </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}

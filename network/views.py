@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
 
-from .models import User, Post
+from .models import User, Post, Following
 
 from datetime import datetime
 
@@ -24,14 +24,20 @@ def index(request):
         posted = request.session.get('posted')
         del request.session['posted']
 
-    posts =  Post.objects.all()
+    posts =  Post.objects.all().order_by('-timestamp')
     # Show 10 post per page
     paginator = Paginator(posts, 10)
     current_page = request.GET.get('page')
     page_posts = paginator.get_page(current_page)
+
+    # Select user's page_posts
+    user_posts = ''
+    if request.user.is_authenticated:
+        user_posts = Post.objects.filter(user=request.user)
     return render(request, "network/index.html", {
         "page_posts": page_posts,
-        "posted": posted
+        "posted": posted,
+        "user_posts": user_posts
     })
 
 
@@ -102,3 +108,15 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+def following(request):
+    return render(request, "network/following.html")
+
+def profile(request, username):
+    user = User.objects.get(username=username)
+    user_posts = Post.objects.filter(user=user.id)
+
+    return render(request, "network/profile.html", {
+        "username": username,
+        "user_posts": user_posts
+    })

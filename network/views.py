@@ -4,8 +4,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
+from django.http import JsonResponse
+import json
+from django.views.decorators.csrf import csrf_exempt
 
-from .models import User, Post, Following
+from .models import User, Post
 
 from datetime import datetime
 
@@ -37,7 +40,8 @@ def index(request):
     return render(request, "network/index.html", {
         "page_posts": page_posts,
         "posted": posted,
-        "user_posts": user_posts
+        "user_posts": user_posts,
+        "current_user": request.user
     })
 
 
@@ -57,6 +61,21 @@ def new_post(request):
         "user": request.user,
         "empty_post": empty_post
     })
+
+
+@csrf_exempt
+# @login_required
+def like_post(request, post_id):
+    post = Post.objects.get(pk=post_id)
+    data = json.loads(request.body.decode("utf-8"))
+    command = data["command"]
+    if command == "like":
+        post.likes += 1
+    elif command == "unlike":
+        post.likes -=1
+    post.save()
+    return JsonResponse({'item': post_id})
+
 
 def login_view(request):
     if request.method == "POST":
@@ -114,7 +133,7 @@ def following(request):
 
 def profile(request, username):
     user = User.objects.get(username=username)
-    user_posts = Post.objects.filter(user=user.id)
+    user_posts = Post.objects.filter(user=user.id).order_by('-timestamp')
 
     return render(request, "network/profile.html", {
         "username": username,

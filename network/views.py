@@ -8,7 +8,7 @@ from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import User, Post
+from .models import User, Post, Like
 
 from datetime import datetime
 
@@ -22,12 +22,22 @@ def add_post(user, content, timestamp):
     new_post.save()
 
 def index(request):
+    # Success alert about adding post
     posted = ''
     if request.session.has_key('posted'):
         posted = request.session.get('posted')
         del request.session['posted']
 
+
     posts =  Post.objects.all().order_by('-timestamp')
+    for post in posts:
+        post.is_liked = False
+        for likes in post.liked_posts.all():
+            if likes.user == request.user:
+                post.is_liked = True
+                break
+
+
     # Show 10 post per page
     paginator = Paginator(posts, 10)
     current_page = request.GET.get('page')
@@ -41,7 +51,8 @@ def index(request):
         "page_posts": page_posts,
         "posted": posted,
         "user_posts": user_posts,
-        "current_user": request.user
+        "current_user": request.user,
+        "posts": posts
     })
 
 
@@ -70,11 +81,16 @@ def like_post(request, post_id):
     data = json.loads(request.body.decode("utf-8"))
     command = data["command"]
     if command == "like":
-        post.likes += 1
+        Like.objects.create(user=request.user, liked_post=post)
+        button_text = "Unlike"
     elif command == "unlike":
-        post.likes -=1
+        like_obj = Like.objects.get(user=request.user, liked_post=post)
+        like_obj.delete()
+        button_text = "Like"
     post.save()
-    return JsonResponse({'item': post_id})
+    # Count Likes
+    likes_count = Like.objects.filter(liked_post=post_id).count()
+    return JsonResponse({'likes': likes_count, 'button_text': button_text})
 
 
 def login_view(request):

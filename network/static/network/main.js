@@ -27,10 +27,12 @@ document.addEventListener('DOMContentLoaded', function () {
               })
               .then(response => response.json())
               .then(data => {
+                  console.log(data);
                   console.log(`Post #${post_id} was liked`);
+                  button.previousElementSibling.innerHTML = `Likes: ${data.likes}`
+                  button.innerHTML = data.button_text;
               })
-              button.previousElementSibling.innerHTML = `Likes: ${Number(likes) + 1}`;
-              button.innerHTML = 'Unlike';
+
           } else {
                 fetch(`like/${post_id}`, {
                     method: 'POST',
@@ -40,10 +42,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .then(response => response.json())
                 .then(data => {
+                    console.log(data);
                     console.log(`Post #${post_id} was unliked`);
+                    button.previousElementSibling.innerHTML = `Likes: ${data.likes}`
+                    button.innerHTML = data.button_text;
                 })
-              button.previousElementSibling.innerHTML = `Likes: ${Number(likes) - 1}`;
-              button.innerHTML = 'Like';
           }
       });
   });

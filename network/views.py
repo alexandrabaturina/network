@@ -51,8 +51,8 @@ def index(request):
         "page_posts": page_posts,
         "posted": posted,
         "user_posts": user_posts,
-        "current_user": request.user,
-        "posts": posts
+        "posts": posts,
+        "current_user": request.user
     })
 
 
@@ -91,6 +91,16 @@ def like_post(request, post_id):
     # Count Likes
     likes_count = Like.objects.filter(liked_post=post_id).count()
     return JsonResponse({'likes': likes_count, 'button_text': button_text})
+
+
+@csrf_exempt
+def edit_post(request, post_id):
+    post = Post.objects.get(pk=post_id)
+    data = json.loads(request.body.decode("utf-8"))
+    post.content = data["edited_post"]
+    post.save()
+    return JsonResponse({"post_content": post.content})
+
 
 
 def login_view(request):

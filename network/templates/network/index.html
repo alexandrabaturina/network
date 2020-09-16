@@ -1,5 +1,7 @@
 {% extends "network/layout.html" %}
 
+{% load static %}
+
 {% block body %}
 
 {% if user.is_authenticated %}
@@ -7,18 +9,38 @@
 {% endif %}
 
     {% if posted %}
-        <div class="alert alert-success" role="alert"> {{ posted }} </div>
+        <div class="alert alert-success alert-dismissible fade show">
+            {{ posted }}
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
     {% endif %}
 
     {% for post in page_posts %}
-        <div class="card">
-            <p class="card-header"> <strong> {{ post.user }} </strong> on {{ post.timestamp }} </p>
+        {% csrf_token %}
+        <div id={{ post.id}} class="card">
+            <p class="card-header"> <strong><a href="{% url 'profile' post.user %}"> {{ post.user }} </a></strong> on {{ post.timestamp }} </p>
             <div class="card-body">
                 <p class="card-text"> {{ post.content }} </p>
-                <p class="card-text"> Likes: {{ post.likes }} </p>
-                <a href="#" class="btn btn-primary">Like</a>
+
+                {% with post.liked_posts.all as likes %}
+                    <p class="likes card-text">Likes: {{ likes.count }}</p>
+                {% endwith %}
+
+                {% if post.is_liked %}
+                    <a href="#" class="like btn btn-primary">Unlike</a>
+                {% else %}
+                    <a href="#" class="like btn btn-primary">Like</a>
+                {% endif %}
+
+                {% if post.user == current_user %}
+                    <button type="button" class="edit-post btn btn-outline-primary">Edit</button>
+                {% endif %}
+
             </div>
         </div>
+
+
+
     {% empty %}
         <p> No posts yet.</p>
     {% endfor %}
@@ -52,4 +74,8 @@
             {% endif %}
         </ul>
     </nav>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/main.js' %}"></script>
 {% endblock %}

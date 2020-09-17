@@ -52,17 +52,16 @@ document.addEventListener('DOMContentLoaded', function () {
               });
           });
       });
-  })
+  });
 
 
-  // Like/Unlike posts
-  const likeButtons = document.querySelectorAll('.like');
+  // Like/unlike post
+  const likeButtons = document.querySelectorAll('.like-post-btn');
   likeButtons.forEach((button) => {
       button.addEventListener('click', function () {
-          const post_id = button.closest(".card").id;
-          const likes = button.previousElementSibling.innerHTML.slice(7);
+          const card = button.closest(".card");
           if (button.innerHTML === 'Like') {
-              fetch(`like/${post_id}`, {
+              fetch(`like/${card.id}`, {
                   method: 'POST',
                   body: JSON.stringify ({
                     "command": 'like'
@@ -70,13 +69,13 @@ document.addEventListener('DOMContentLoaded', function () {
               })
               .then(response => response.json())
               .then(data => {
-                  console.log(`Post #${post_id} was liked`);
+                  console.log(`Post #${card.id} was liked`);
                   button.previousElementSibling.innerHTML = `Likes: ${data.likes}`
                   button.innerHTML = data.button_text;
               })
 
           } else {
-                fetch(`like/${post_id}`, {
+                fetch(`like/${card.id}`, {
                     method: 'POST',
                     body: JSON.stringify ({
                       "command": 'unlike'
@@ -84,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(`Post #${post_id} was unliked`);
+                    console.log(`Post #${card.id} was unliked`);
                     button.previousElementSibling.innerHTML = `Likes: ${data.likes}`
                     button.innerHTML = data.button_text;
                 })

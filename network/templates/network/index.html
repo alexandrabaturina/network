@@ -27,15 +27,19 @@
                 {% endwith %}
 
                 {% if post.is_liked %}
-                    <a href="#" class="like btn btn-primary">Unlike</a>
+                    <a href="#" class="like-post-btn btn btn-primary">Unlike</a>
                 {% else %}
-                    <a href="#" class="like btn btn-primary">Like</a>
+                    <a href="#" class="like-post btn btn-primary">Like</a>
                 {% endif %}
 
                 {% if post.user == current_user %}
-                    <button type="button" class="edit-post btn btn-outline-primary">Edit</button>
+                    <button type="button" class="edit-post-btn btn btn-outline-primary">Edit</button>
                 {% endif %}
+            </div>
 
+            <div class="edit-card-body">
+                <textarea name="editing" class="edit-post-textarea" rows="6" cols="80"></textarea>
+                <button type="button" class="save-post-btn btn btn-outline-primary">Save</button>
             </div>
         </div>
 

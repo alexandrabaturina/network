@@ -1,62 +1,54 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-  // Close alert messages
-  const alertMessages = document.querySelectorAll('.alert');
-  alertMessages.forEach((alert) => {
+  document.querySelectorAll('.card-body').forEach(div => div.style.display = 'block');
+  document.querySelectorAll('.edit-card-body').forEach(div => div.style.display = 'none');
+
+  // Close alert message
+  document.querySelectorAll('.alert').forEach((alert) => {
       alert.addEventListener('click', () => alert.remove())
   });
 
-  // Edit posts
-  const editButtons = document.querySelectorAll('.edit-post');
-  editButtons.forEach((button) => {
+  // Edit post
+  document.querySelectorAll('.edit-post-btn').forEach((button) => {
       button.addEventListener('click', function() {
+
           const card = button.closest(".card");
-          const post_id = card.id;
-          const card_content = card.querySelector('.card-body');
-          const old_card_content = card_content.innerHTML;
-          const post_to_edit = card_content.querySelector('.card-text').innerHTML;
+          const oldPostText = card.querySelector('.card-text').innerText;
+          // const oldPostCard = card.querySelector('.card-body').innerHTML;
 
-          const textarea = document.createElement("textarea");
-          const save_button = document.createElement("button");
-          save_button.type = "button";
-          save_button.classList.add("btn");
-          save_button.classList.add("btn-primary");
-          save_button.innerHTML = "Save";
-          textarea.placeholder = post_to_edit;
-          card_content.innerHTML = '';
-          card_content.append(textarea);
-          card_content.append(save_button);
+          card.querySelector('.card-body').style.display = 'none';
+          card.querySelector('.edit-card-body').style.display = 'block';
 
-          save_button.addEventListener('click', function() {
-              fetch(`edit/${post_id}`, {
+          card.querySelector('.edit-post-textarea').innerHTML = oldPostText;
+
+          card.querySelector('.save-post-btn').addEventListener('click', function() {
+              fetch(`edit/${card.id}`, {
                   method: 'POST',
                   body: JSON.stringify ({
-                      "edited_post": textarea.value
+                      "edited_post": card.querySelector('.edit-post-textarea').value
                   })
               })
               .then(response => response.json())
               .then(data => {
-                  console.log(`Post #${post_id} was edited`);
-                  textarea.remove();
-                  save_button.remove();
-                  card_content.innerHTML = old_card_content;
-                  card_content.querySelector('.card-text').innerHTML = data["post_content"];
+                  console.log(`Post #${card.id} was edited`);
+                  card.querySelector('.edit-card-body').style.display = 'none';
+                  card.querySelector('.card-body').style.display = 'block';
+                  card.querySelector('.card-text').innerHTML = data["post_content"];
 
-                  const edit_alert = document.createElement('div');
-                  edit_alert.classList.add('alert');
-                  edit_alert.classList.add('alert-success');
-                  edit_alert.classList.add('alert-dismissible');
-                  edit_alert.classList.add('fade');
-                  edit_alert.classList.add('show');
-                  edit_alert.role = "alert";
-                  edit_alert.innerHTML = "Your post was successfully edited."
-                  const close_alert = document.createElement('button');
-                  close_alert.type = "button";
-                  close_alert.classList.add('close');
-                  close_alert["data-dismiss"] = 'alert';
-                  close_alert.innerHTML = '&times';
-                  document.querySelector('.body').prepend(edit_alert);
-                  document.querySelector('.alert-success').append(close_alert);
+                  const editAlert = document.createElement('div');
+                  editAlert.classList.add('alert', 'alert-success', 'alert-dismissible', 'fade', 'show');
+                  editAlert.role = "alert";
+                  editAlert.innerHTML = "Your post was successfully edited."
+                  const closeAlertButton = document.createElement('button');
+                  closeAlertButton.type = "button";
+                  closeAlertButton.classList.add('close');
+                  closeAlertButton["data-dismiss"] = 'alert';
+                  closeAlertButton.innerHTML = '&times';
+                  document.querySelector('.body').prepend(editAlert);
+                  document.querySelector('.alert-success').append(closeAlertButton);
+                  closeAlertButton.addEventListener('click', function () {
+                      editAlert.remove();
+                  })
               });
           });
       });

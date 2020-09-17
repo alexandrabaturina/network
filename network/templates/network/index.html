@@ -27,9 +27,9 @@
                 {% endwith %}
 
                 {% if post.is_liked %}
-                    <a href="#" class="like-post-btn btn btn-primary">Unlike</a>
+                    <button type="button" class="like-post-btn btn btn-primary">Unlike</button>
                 {% else %}
-                    <a href="#" class="like-post-btn btn btn-primary">Like</a>
+                    <button type="button" class="like-post-btn btn btn-primary">Like</button>
                 {% endif %}
 
                 {% if post.user == current_user %}

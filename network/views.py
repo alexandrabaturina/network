@@ -8,7 +8,7 @@ from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import User, Post, Like
+from .models import User, Post, Like, Following
 
 from datetime import datetime
 
@@ -157,11 +157,17 @@ def register(request):
 def following(request):
     return render(request, "network/following.html")
 
+
 def profile(request, username):
+    # return HttpResponse(username)
     user = User.objects.get(username=username)
     user_posts = Post.objects.filter(user=user.id).order_by('-timestamp')
+    following = Following.objects.filter(user=user.id).count()
+    followers = Following.objects.filter(following=user.id).count()
 
     return render(request, "network/profile.html", {
         "username": username,
-        "user_posts": user_posts
+        "user_posts": user_posts,
+        "following": following,
+        "followers": followers
     })

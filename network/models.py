@@ -12,7 +12,6 @@ class Post(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        """ String representing a Post object. """
         return f"{self.user} on {self.timestamp}"
 
 class Like(models.Model):
@@ -22,3 +21,14 @@ class Like(models.Model):
 
     def __str__(self):
         return f"{self.user} likes post of {self.liked_post.user} on {self.liked_post.timestamp}"
+
+class Following(models.Model):
+    """ Model representing a user following other users."""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="followers")
+    following = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following")
+
+    class Meta:
+        unique_together = ("user", "following")
+
+    def __str__(self):
+        return f"{self.user} follows {self.following}"

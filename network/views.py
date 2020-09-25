@@ -176,19 +176,19 @@ def following(request):
 
 
 def profile(request, username):
-    to_follow = False
+    follower = request.user
     user = User.objects.get(username=username)
+    show_follow_button = (follower != user)
+    to_follow = not Following.objects.filter(user=follower, following=user).exists()
     user_posts = Post.objects.filter(user=user.id).order_by('-timestamp')
     following = Following.objects.filter(user=user.id).count()
     followers = Following.objects.filter(following=user.id).count()
-    if username != request.user:
-        to_follow = True
 
     return render(request, "network/profile.html", {
         "username": username,
-        "request_user": request.user,
         "user_posts": user_posts,
         "following": following,
         "followers": followers,
-        "to_follow": to_follow
+        "to_follow": to_follow,
+        "show_follow_button": show_follow_button
     })

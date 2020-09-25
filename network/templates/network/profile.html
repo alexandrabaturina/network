@@ -1,14 +1,21 @@
 {% extends "network/layout.html" %}
 
+{% load static %}
+
 {% block body %}
-
-
 
     <div class="card">
         <div class="card-body">
             <h2 class="card-title"> {{ username }} </h2>
-            <p class="card-text"> Followers: </p>
-            <p class="card-text">Following: </p>
+            <p class="card-text">Followers: {{ followers }}</p>
+            <p class="card-text">Following: {{ following }} </p>
+            {% if show_follow_button %}
+                {% if to_follow %}
+                    <button type="button" class="follow-button btn btn-primary">Follow</button>
+                {% else %}
+                    <button type="button" class="follow-button btn btn-primary">Unfollow</button>
+                {% endif %}
+            {% endif %}
         </div>
     </div>
 
@@ -26,4 +33,8 @@
         </div>
     {% endfor %}
 
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/main.js' %}"></script>
 {% endblock %}

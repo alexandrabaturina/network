@@ -3,10 +3,28 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.card-body').forEach(div => div.style.display = 'block');
   document.querySelectorAll('.edit-card-body').forEach(div => div.style.display = 'none');
 
+  // Create alert message
+  function createAlert(cardId, alertText) {
+      const alertDiv = document.createElement('div');
+      alertDiv.classList.add('alert', 'alert-success', 'alert-dismissible', 'fade', 'show');
+      alertDiv.role = "alert";
+      alertDiv.innerHTML = `${alertText}`;
+      const closeAlertButton = document.createElement('button');
+      closeAlertButton.type = "button";
+      closeAlertButton.classList.add('close');
+      closeAlertButton["data-dismiss"] = 'alert';
+      closeAlertButton.innerHTML = '&times';
+
+      document.getElementById(`${cardId}`).insertAdjacentElement('beforebegin', alertDiv);
+      document.querySelector('.alert-success').append(closeAlertButton);
+      closeAlertButton.addEventListener('click', () => alertDiv.remove());
+  }
+
   // Close alert message
   document.querySelectorAll('.alert').forEach((alert) => {
-      alert.addEventListener('click', () => alert.remove())
+      alert.addEventListener('click', () => alert.remove());
   });
+
 
   // Edit post
   document.querySelectorAll('.edit-post-btn').forEach((button) => {
@@ -14,13 +32,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
           const card = button.closest(".card");
           const oldPostText = card.querySelector('.card-text').innerText;
-          // const oldPostCard = card.querySelector('.card-body').innerHTML;
 
           card.querySelector('.card-body').style.display = 'none';
           card.querySelector('.edit-card-body').style.display = 'block';
 
           card.querySelector('.edit-post-textarea').innerHTML = oldPostText;
-
           card.querySelector('.save-post-btn').addEventListener('click', function() {
               fetch(`edit/${card.id}`, {
                   method: 'POST',
@@ -35,20 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
                   card.querySelector('.card-body').style.display = 'block';
                   card.querySelector('.card-text').innerHTML = data["post_content"];
 
-                  const editAlert = document.createElement('div');
-                  editAlert.classList.add('alert', 'alert-success', 'alert-dismissible', 'fade', 'show');
-                  editAlert.role = "alert";
-                  editAlert.innerHTML = "Your post was successfully edited."
-                  const closeAlertButton = document.createElement('button');
-                  closeAlertButton.type = "button";
-                  closeAlertButton.classList.add('close');
-                  closeAlertButton["data-dismiss"] = 'alert';
-                  closeAlertButton.innerHTML = '&times';
-                  document.querySelector('.body').prepend(editAlert);
-                  document.querySelector('.alert-success').append(closeAlertButton);
-                  closeAlertButton.addEventListener('click', function () {
-                      editAlert.remove();
-                  })
+                  createAlert(card.id, 'Your post was edited.');
               });
           });
       });
@@ -72,8 +75,8 @@ document.addEventListener('DOMContentLoaded', function () {
                   console.log(`Post #${card.id} was liked`);
                   button.previousElementSibling.innerHTML = `Likes: ${data.likes}`
                   button.innerHTML = data.button_text;
+                  createAlert(`${card.id}`, 'You liked the post!')
               })
-
           } else {
                 fetch(`like/${card.id}`, {
                     method: 'POST',
@@ -86,8 +89,45 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log(`Post #${card.id} was unliked`);
                     button.previousElementSibling.innerHTML = `Likes: ${data.likes}`
                     button.innerHTML = data.button_text;
+                    createAlert(`${card.id}`, 'You unliked the post!')
                 })
-          }
+            }
+        });
+    });
+
+    // Follow user
+    const followButton = document.querySelector('.follow-button');
+    if (followButton) {
+      followButton.addEventListener('click', function() {
+          const card = followButton.closest('.card');
+          const username = card.querySelector('h2').innerText;
+          if (followButton.innerHTML === 'Follow') {
+              fetch(`follow/${username}`, {
+                  method: 'POST',
+                  body: JSON.stringify ({
+                      'username': 'username'
+                  })
+              })
+              .then(response => response.json())
+              .then(data => {
+                  console.log(data);
+                  console.log(`Now you follow ${username}.`);
+                  followButton.innerHTML = data.button_text;
+              })
+          } else {
+              fetch(`unfollow/${username}`, {
+                  method: 'POST',
+                  body: JSON.stringify ({
+                      'username': 'username'
+                  })
+              })
+              .then(response => response.json())
+              .then(data => {
+                  console.log(data);
+                  console.log(`You don't follow ${username} anymore.`);
+                  followButton.innerHTML = data.button_text;
+              })
+            }
       });
+    };
   });
-});

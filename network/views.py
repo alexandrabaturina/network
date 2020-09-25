@@ -172,7 +172,17 @@ def register(request):
         return render(request, "network/register.html")
 
 def following(request):
-    return render(request, "network/following.html")
+    following_users = Following.objects.filter(user=request.user).values('following')
+    posts = Post.objects.filter(user__in=following_users).order_by('-timestamp')
+    for post in posts:
+        post.is_liked = False
+        for likes in post.liked_posts.all():
+            if likes.user == request.user:
+                post.is_liked = True
+                break
+    return render(request, "network/following.html", {
+        "posts": posts
+    })
 
 
 def profile(request, username):

@@ -1,0 +1,32 @@
+{% extends "network/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+
+    <h2> Posts by users you are currently following </h2>
+
+    {% for post in posts %}
+        {% csrf_token %}
+        <div id={{ post.id }} class="card">
+            <p class="card-header"> <strong><a href="{% url 'profile' post.user %}"> {{ post.user }} </a></strong> on {{ post.timestamp }} </p>
+            <div class="card-body">
+                <p class="card-text"> {{ post.content }} </p>
+
+                {% with post.liked_posts.all as likes %}
+                    <p class="likes card-text">Likes: {{ likes.count }}</p>
+                {% endwith %}
+
+                {% if post.is_liked %}
+                    <button type="button" class="like-post-btn btn btn-primary">Unlike</button>
+                {% else %}
+                    <button type="button" class="like-post-btn btn btn-primary">Like</button>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/main.js' %}"></script>
+{% endblock %}

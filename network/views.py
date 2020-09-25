@@ -21,12 +21,6 @@ def add_post(user, content, timestamp):
     )
     new_post.save()
 
-def add_following(user, following):
-    new_following = Following (
-        user = user,
-        following = following
-    )
-    new_following.save()
 
 def index(request):
     # Success alert about adding post
@@ -112,9 +106,8 @@ def edit_post(request, post_id):
 @csrf_exempt
 def follow_user(request, username):
     data = json.loads(request.body.decode("utf-8"))
-    user = request.user
     following = User.objects.get(username=username)
-    add_following(user, following)
+    Following.objects.create(user=request.user, following=following)
     return JsonResponse({"button_text": "Unfollow"})
 
 

@@ -21,6 +21,13 @@ def add_post(user, content, timestamp):
     )
     new_post.save()
 
+def add_following(user, following):
+    new_following = Following (
+        user = user,
+        following = following
+    )
+    new_following.save()
+
 def index(request):
     # Success alert about adding post
     posted = ''
@@ -102,6 +109,14 @@ def edit_post(request, post_id):
     return JsonResponse({"post_content": post.content})
 
 
+@csrf_exempt
+def follow_user(request, username):
+    data = json.loads(request.body.decode("utf-8"))
+    user = request.user
+    following = User.objects.get(username=username)
+    add_following(user, following)
+    return JsonResponse({"button_text": "Unfollow"})
+
 
 def login_view(request):
     if request.method == "POST":
@@ -159,15 +174,19 @@ def following(request):
 
 
 def profile(request, username):
-    # return HttpResponse(username)
+    to_follow = False
     user = User.objects.get(username=username)
     user_posts = Post.objects.filter(user=user.id).order_by('-timestamp')
     following = Following.objects.filter(user=user.id).count()
     followers = Following.objects.filter(following=user.id).count()
+    if username != request.user:
+        to_follow = True
 
     return render(request, "network/profile.html", {
         "username": username,
+        "request_user": request.user,
         "user_posts": user_posts,
         "following": following,
-        "followers": followers
+        "followers": followers,
+        "to_follow": to_follow
     })

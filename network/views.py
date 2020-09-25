@@ -118,6 +118,15 @@ def follow_user(request, username):
     return JsonResponse({"button_text": "Unfollow"})
 
 
+@csrf_exempt
+def unfollow_user(request, username):
+    data = json.loads(request.body.decode("utf-8"))
+    following = User.objects.get(username=username)
+    following_obj = Following.objects.get(user=request.user, following=following)
+    following_obj.delete()
+    return JsonResponse({"button_text": "Follow"})
+
+
 def login_view(request):
     if request.method == "POST":
 

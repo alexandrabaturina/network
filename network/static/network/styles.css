@@ -1,0 +1,24 @@
+.network-name {
+  font-size: 40px;
+}
+
+.fa-twitter {
+  font-size: 40px;
+}
+
+div.card {
+  margin: 0 5% 25px;
+}
+
+textarea {
+  padding-left: 10px;
+  margin-left: 5%;
+  margin-right: 5%;
+  width: 90%;
+}
+
+input.btn.btn-primary {
+  margin-left: 5%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

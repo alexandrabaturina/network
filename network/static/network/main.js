@@ -5,6 +5,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Create alert message
   function createAlert(cardId, alertText) {
+
+      // Remove existing alerts before creating a new one
+      document.querySelectorAll('.alert').forEach(existingAlert => existingAlert.remove());
+
       const alertDiv = document.createElement('div');
       alertDiv.classList.add('alert', 'alert-success', 'alert-dismissible', 'fade', 'show');
       alertDiv.role = "alert";

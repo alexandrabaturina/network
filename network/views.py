@@ -12,6 +12,57 @@ from .models import User, Post, Like, Following
 
 from datetime import datetime
 
+def login_view(request):
+    if request.method == "POST":
+
+        # Attempt to sign user in
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+
+        # Check if authentication successful
+        if user is not None:
+            login(request, user)
+            return HttpResponseRedirect(reverse("index"))
+        else:
+            return render(request, "network/login.html", {
+                "message": "Invalid username and/or password."
+            })
+    else:
+        return render(request, "network/login.html")
+
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse("index"))
+
+
+def register(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        email = request.POST["email"]
+
+        # Ensure password matches confirmation
+        password = request.POST["password"]
+        confirmation = request.POST["confirmation"]
+        if password != confirmation:
+            return render(request, "network/register.html", {
+                "message": "Passwords must match."
+            })
+
+        # Attempt to create new user
+        try:
+            user = User.objects.create_user(username, email, password)
+            user.save()
+        except IntegrityError:
+            return render(request, "network/register.html", {
+                "message": "Username already taken."
+            })
+        login(request, user)
+        return HttpResponseRedirect(reverse("index"))
+    else:
+        return render(request, "network/register.html")
+
 
 def add_post(user, content, timestamp):
     new_post = Post (
@@ -28,7 +79,6 @@ def index(request):
     if request.session.has_key('posted'):
         posted = request.session.get('posted')
         del request.session['posted']
-
 
     posts =  Post.objects.all().order_by('-timestamp')
     for post in posts:
@@ -108,7 +158,8 @@ def follow_user(request, username):
     data = json.loads(request.body.decode("utf-8"))
     following = User.objects.get(username=username)
     Following.objects.create(user=request.user, following=following)
-    return JsonResponse({"button_text": "Unfollow"})
+    followers = Following.objects.filter(following=following).count()
+    return JsonResponse({"button_text": "Unfollow", "followers": followers})
 
 
 @csrf_exempt
@@ -117,59 +168,11 @@ def unfollow_user(request, username):
     following = User.objects.get(username=username)
     following_obj = Following.objects.get(user=request.user, following=following)
     following_obj.delete()
-    return JsonResponse({"button_text": "Follow"})
+    followers = Following.objects.filter(following=following).count()
+    return JsonResponse({"button_text": "Follow", "followers": followers})
 
 
-def login_view(request):
-    if request.method == "POST":
 
-        # Attempt to sign user in
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
-
-        # Check if authentication successful
-        if user is not None:
-            login(request, user)
-            return HttpResponseRedirect(reverse("index"))
-        else:
-            return render(request, "network/login.html", {
-                "message": "Invalid username and/or password."
-            })
-    else:
-        return render(request, "network/login.html")
-
-
-def logout_view(request):
-    logout(request)
-    return HttpResponseRedirect(reverse("index"))
-
-
-def register(request):
-    if request.method == "POST":
-        username = request.POST["username"]
-        email = request.POST["email"]
-
-        # Ensure password matches confirmation
-        password = request.POST["password"]
-        confirmation = request.POST["confirmation"]
-        if password != confirmation:
-            return render(request, "network/register.html", {
-                "message": "Passwords must match."
-            })
-
-        # Attempt to create new user
-        try:
-            user = User.objects.create_user(username, email, password)
-            user.save()
-        except IntegrityError:
-            return render(request, "network/register.html", {
-                "message": "Username already taken."
-            })
-        login(request, user)
-        return HttpResponseRedirect(reverse("index"))
-    else:
-        return render(request, "network/register.html")
 
 def following(request):
     following_users = Following.objects.filter(user=request.user).values('following')
@@ -191,6 +194,13 @@ def profile(request, username):
     show_follow_button = (follower != user)
     to_follow = not Following.objects.filter(user=follower, following=user).exists()
     user_posts = Post.objects.filter(user=user.id).order_by('-timestamp')
+
+    for post in user_posts:
+        post.is_liked = False
+        for likes in post.liked_posts.all():
+            if likes.user == request.user:
+                post.is_liked = True
+                break
     following = Following.objects.filter(user=user.id).count()
     followers = Following.objects.filter(following=user.id).count()
 

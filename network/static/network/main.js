@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
                   console.log(`Post #${card.id} was liked`);
                   button.previousElementSibling.innerHTML = `Likes: ${data.likes}`
                   button.innerHTML = data.button_text;
-                  createAlert(`${card.id}`, 'You liked the post!')
+                  createAlert(`${card.id}`, 'You liked the post.')
               })
           } else {
                 fetch(`like/${card.id}`, {
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log(`Post #${card.id} was unliked`);
                     button.previousElementSibling.innerHTML = `Likes: ${data.likes}`
                     button.innerHTML = data.button_text;
-                    createAlert(`${card.id}`, 'You unliked the post!')
+                    createAlert(`${card.id}`, 'You unliked the post.')
                 })
             }
         });
@@ -116,6 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
               .then(data => {
                   console.log(data);
                   console.log(`Now you follow ${username}.`);
+                  document.querySelector('.followers').innerHTML = `Followers: ${data.followers}`;
                   followButton.innerHTML = data.button_text;
               })
           } else {
@@ -129,6 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
               .then(data => {
                   console.log(data);
                   console.log(`You don't follow ${username} anymore.`);
+                  document.querySelector('.followers').innerHTML = `Followers: ${data.followers}`;
                   followButton.innerHTML = data.button_text;
               })
             }

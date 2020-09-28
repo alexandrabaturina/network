@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
       button.addEventListener('click', function () {
           const card = button.closest(".card");
           if (button.innerHTML === 'Like') {
-              fetch(`like/${card.id}`, {
+              fetch(`/like/${card.id}`, {
                   method: 'POST',
                   body: JSON.stringify ({
                     "command": 'like'
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
                   createAlert(`${card.id}`, 'You liked the post.')
               })
           } else {
-                fetch(`like/${card.id}`, {
+                fetch(`/like/${card.id}`, {
                     method: 'POST',
                     body: JSON.stringify ({
                       "command": 'unlike'

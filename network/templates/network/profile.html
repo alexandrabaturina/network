@@ -20,7 +20,7 @@
     </div>
 
     {% for post in user_posts %}
-        <div class="card">
+        <div id={{ post.id }} class="card">
             <p class="card-header"> <strong><a href="{% url 'profile' post.user %}"> {{ post.user }} </a></strong> on {{ post.timestamp }} </p>
                 <div class="card-body">
                     <p class="card-text"> {{ post.content }} </p>

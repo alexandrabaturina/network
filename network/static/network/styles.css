@@ -11,7 +11,6 @@
 }
 
 div.card {
-  /* margin: 15px 5% 15px 5%; */
   margin: 15px 5% 25px 5%;
 }
 
@@ -42,4 +41,33 @@ div.save-button {
 
 #following-posts {
   text-align: center;
+}
+
+.profile {
+  border-style: none;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.body-profile {
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  width: 400px;
+}
+
+.card-text-profile {
+  margin-bottom: 5px;
+}
+
+.profile-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fa-user {
+  font-size: 35px;
+  margin-right: 15px;
 }

@@ -6,8 +6,13 @@
   font-size: 40px;
 }
 
+.bg-light {
+  margin-bottom: 30px;
+}
+
 div.card {
-  margin: 0 5% 25px;
+  /* margin: 15px 5% 15px 5%; */
+  margin: 15px 5% 25px 5%;
 }
 
 textarea {
@@ -15,10 +20,22 @@ textarea {
   margin-left: 5%;
   margin-right: 5%;
   width: 90%;
+  margin-top: 20px;
 }
 
 input.btn.btn-primary {
   margin-left: 5%;
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+div.post-button,
+div.save-button {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+#new-post {
+  padding-left: 5%;
 }

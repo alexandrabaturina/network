@@ -4,7 +4,7 @@
 
 {% block body %}
 
-    <h2> Posts by users you are currently following </h2>
+    <h3 id="following-posts"> Posts by users you are following </h3>
 
     {% for post in posts %}
         {% csrf_token %}

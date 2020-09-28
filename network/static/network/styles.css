@@ -39,3 +39,7 @@ div.save-button {
 #new-post {
   padding-left: 5%;
 }
+
+#following-posts {
+  text-align: center;
+}

@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
           card.querySelector('.edit-post-textarea').innerHTML = oldPostText;
           card.querySelector('.save-post-btn').addEventListener('click', function() {
-              fetch(`edit/${card.id}`, {
+              fetch(`/edit/${card.id}`, {
                   method: 'POST',
                   body: JSON.stringify ({
                       "edited_post": card.querySelector('.edit-post-textarea').value
@@ -114,7 +114,6 @@ document.addEventListener('DOMContentLoaded', function () {
               })
               .then(response => response.json())
               .then(data => {
-                  console.log(data);
                   console.log(`Now you follow ${username}.`);
                   document.querySelector('.followers').innerHTML = `Followers: ${data.followers}`;
                   followButton.innerHTML = data.button_text;
@@ -128,7 +127,6 @@ document.addEventListener('DOMContentLoaded', function () {
               })
               .then(response => response.json())
               .then(data => {
-                  console.log(data);
                   console.log(`You don't follow ${username} anymore.`);
                   document.querySelector('.followers').innerHTML = `Followers: ${data.followers}`;
                   followButton.innerHTML = data.button_text;

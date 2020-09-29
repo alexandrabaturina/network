@@ -38,6 +38,17 @@
                     {% else %}
                         <button type="button" class="like-post-btn btn btn-primary">Like</button>
                     {% endif %}
+
+                    {% if post.user == current_user %}
+                        <button type="button" class="edit-post-btn btn btn-outline-primary">Edit</button>
+                    {% endif %}
+                </div>
+
+                <div class="edit-card-body">
+                    <textarea name="editing" class="edit-post-textarea" rows="6" cols="80"></textarea>
+                    <div class="save-button">
+                        <button type="button" class="save-post-btn btn btn-outline-primary">Save</button>
+                    </div>
                 </div>
         </div>
     {% endfor %}

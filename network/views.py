@@ -224,5 +224,6 @@ def profile(request, username):
         "following": following,
         "followers": followers,
         "to_follow": to_follow,
-        "show_follow_button": show_follow_button
+        "show_follow_button": show_follow_button,
+        "current_user": request.user
     })

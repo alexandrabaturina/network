@@ -99,6 +99,7 @@ def index(request):
                 break
 
     page_posts = add_pagination(request, posts, PER_PAGE)
+    show_pagination = posts.count() // PER_PAGE > 0
 
     # Select user's page_posts
     user_posts = ''
@@ -109,7 +110,8 @@ def index(request):
         "posted": posted,
         "user_posts": user_posts,
         "posts": posts,
-        "current_user": request.user
+        "current_user": request.user,
+        "show_pagination": show_pagination
     })
 
 
@@ -196,10 +198,12 @@ def following(request):
                 break
 
     page_posts = add_pagination(request, posts, PER_PAGE)
+    show_pagination = posts.count() // PER_PAGE > 0
 
     return render(request, "network/following.html", {
         "posts": posts,
-        "page_posts": page_posts
+        "page_posts": page_posts,
+        "show_pagination": show_pagination
     })
 
 
@@ -222,6 +226,7 @@ def profile(request, username):
     followers = Following.objects.filter(following=user.id).count()
 
     page_posts = add_pagination(request, user_posts, PER_PAGE)
+    show_pagination = user_posts.count() // PER_PAGE > 0
 
     return render(request, "network/profile.html", {
         "username": user.username,

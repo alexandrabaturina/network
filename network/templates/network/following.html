@@ -26,35 +26,37 @@
         </div>
     {% endfor %}
 
-    <nav aria-label="Pagination">
-        <ul class="pagination justify-content-center">
+    {% if show_pagination %}
+        <nav aria-label="Pagination">
+            <ul class="pagination justify-content-center">
 
-            {% if page_posts.has_previous %}
-                <li class="page-item"><a class="page-link" href="?page={{ page_posts.previous_page_number }}">Previous</a></li>
-            {% else %}
-                <li class="page-item disabled"><span class="page-link">Previous</span></li>
-            {% endif %}
-
-            {% for num in page_posts.paginator.page_range %}
-                {% if num == page_posts.number %}
-                    <li class="page-item active">
-                        <span class="page-link">
-                            {{ num }}
-                            <span class="sr-only">(current)</span>
-                        </span>
-                    </li>
+                {% if page_posts.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_posts.previous_page_number }}">Previous</a></li>
                 {% else %}
-                    <a class="page-link" href="?page={{ num }}"> {{ num }} </a>
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
                 {% endif %}
-            {% endfor %}
 
-            {% if page_posts.has_next %}
-                <li class="page-item"><a class="page-link" href="?page={{ page_posts.next_page_number }}">Next</a></li>
-            {% else %}
-                <li class="page-item disabled"><span class="page-link">Next</span></li>
-            {% endif %}
-        </ul>
-    </nav>
+                {% for num in page_posts.paginator.page_range %}
+                    {% if num == page_posts.number %}
+                        <li class="page-item active">
+                            <span class="page-link">
+                                {{ num }}
+                                <span class="sr-only">(current)</span>
+                            </span>
+                        </li>
+                    {% else %}
+                        <a class="page-link" href="?page={{ num }}"> {{ num }} </a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_posts.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_posts.next_page_number }}">Next</a></li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
 {% endblock %}
 
 {% block script %}

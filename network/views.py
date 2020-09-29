@@ -12,6 +12,8 @@ from .models import User, Post, Like, Following
 
 from datetime import datetime
 
+PER_PAGE = 10
+
 def login_view(request):
     if request.method == "POST":
 
@@ -73,7 +75,15 @@ def add_post(user, content, timestamp):
     new_post.save()
 
 
+def add_pagination(request, posts, amount):
+    """Return amount of posts per page."""
+    paginator = Paginator(posts, 10)
+    current_page = request.GET.get('page')
+    return paginator.get_page(current_page)
+
+
 def index(request):
+    """Render index template."""
     # Success alert about adding post
     posted = ''
     if request.session.has_key('posted'):
@@ -88,11 +98,7 @@ def index(request):
                 post.is_liked = True
                 break
 
-
-    # Show 10 post per page
-    paginator = Paginator(posts, 10)
-    current_page = request.GET.get('page')
-    page_posts = paginator.get_page(current_page)
+    page_posts = add_pagination(request, posts, PER_PAGE)
 
     # Select user's page_posts
     user_posts = ''
@@ -108,6 +114,7 @@ def index(request):
 
 
 def new_post(request):
+    """Add new post."""
     empty_post = ''
     if request.method == "POST":
         if request.POST.get("post-button"):
@@ -128,6 +135,7 @@ def new_post(request):
 @csrf_exempt
 # @login_required
 def like_post(request, post_id):
+    """Like/dislike post #post_id."""
     post = Post.objects.get(pk=post_id)
     data = json.loads(request.body.decode("utf-8"))
     command = data["command"]
@@ -146,6 +154,7 @@ def like_post(request, post_id):
 
 @csrf_exempt
 def edit_post(request, post_id):
+    """Edit post #post_id."""
     post = Post.objects.get(pk=post_id)
     data = json.loads(request.body.decode("utf-8"))
     post.content = data["edited_post"]
@@ -155,6 +164,7 @@ def edit_post(request, post_id):
 
 @csrf_exempt
 def follow_user(request, username):
+    """Follow user with username username."""
     data = json.loads(request.body.decode("utf-8"))
     following = User.objects.get(username=username)
     Following.objects.create(user=request.user, following=following)
@@ -164,6 +174,7 @@ def follow_user(request, username):
 
 @csrf_exempt
 def unfollow_user(request, username):
+    """Unfollow user with username username."""
     data = json.loads(request.body.decode("utf-8"))
     following = User.objects.get(username=username)
     following_obj = Following.objects.get(user=request.user, following=following)
@@ -172,11 +183,11 @@ def unfollow_user(request, username):
     return JsonResponse({"button_text": "Follow", "followers": followers})
 
 
-
-
 def following(request):
+    """Render following template."""
     following_users = Following.objects.filter(user=request.user).values('following')
     posts = Post.objects.filter(user__in=following_users).order_by('-timestamp')
+
     for post in posts:
         post.is_liked = False
         for likes in post.liked_posts.all():
@@ -184,10 +195,8 @@ def following(request):
                 post.is_liked = True
                 break
 
-    # Show 10 post per page
-    paginator = Paginator(posts, 10)
-    current_page = request.GET.get('page')
-    page_posts = paginator.get_page(current_page)
+    page_posts = add_pagination(request, posts, PER_PAGE)
+
     return render(request, "network/following.html", {
         "posts": posts,
         "page_posts": page_posts
@@ -195,6 +204,7 @@ def following(request):
 
 
 def profile(request, username):
+    """Render profile of user with username username."""
     follower = request.user
     user = User.objects.get(username=username)
     show_follow_button = (follower != user)
@@ -207,13 +217,11 @@ def profile(request, username):
             if likes.user == request.user:
                 post.is_liked = True
                 break
+
     following = Following.objects.filter(user=user.id).count()
     followers = Following.objects.filter(following=user.id).count()
 
-    # Show 10 post per page
-    paginator = Paginator(user_posts, 10)
-    current_page = request.GET.get('page')
-    page_posts = paginator.get_page(current_page)
+    page_posts = add_pagination(request, user_posts, PER_PAGE)
 
     return render(request, "network/profile.html", {
         "username": user.username,

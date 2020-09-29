@@ -26,10 +26,12 @@
                     <p class="likes card-text">Likes: {{ likes.count }}</p>
                 {% endwith %}
 
-                {% if post.is_liked %}
-                    <button type="button" class="like-post-btn btn btn-primary">Unlike</button>
-                {% else %}
-                    <button type="button" class="like-post-btn btn btn-primary">Like</button>
+                {% if user.is_authenticated %}
+                    {% if post.is_liked %}
+                        <button type="button" class="like-post-btn btn btn-primary">Unlike</button>
+                    {% else %}
+                        <button type="button" class="like-post-btn btn btn-primary">Like</button>
+                    {% endif %}
                 {% endif %}
 
                 {% if post.user == current_user %}

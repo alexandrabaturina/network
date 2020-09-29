@@ -35,3 +35,13 @@ The project meets the following requirements.
   
 * **"Like" and "Unlike"**  
   Users are able to click a button or link on any post to toggle whether or not they "like" that post.
+## Getting Started
+### Running Locally
+To run **network** locally,
+1. Clone this repo.
+2. ```cd``` into project directory.
+3. Start the *Django* web server.
+```sh
+$ python manage.py runserver
+```
+4. Access ```127.0.0.1:8000``` in your browser.

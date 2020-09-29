@@ -13,11 +13,11 @@
         </div>
         {% endif %}
 
-        <form action="" method="post">
+        <form method="post" action="">
             {% csrf_token %}
             <textarea name="post-content" rows="5" placeholder="What's on your mind, {{ user }}?"></textarea>
             <div class="post-button">
-                <button type="button" value="Post" name="post-button" class="btn btn-primary">Post</button>
+                <input type="submit" name="post-button" value="Post" class="btn btn-primary">
             </div>
         </form>
     {% endif %}

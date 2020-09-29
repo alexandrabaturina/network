@@ -35,6 +35,11 @@ The project meets the following requirements.
   
 * **"Like" and "Unlike"**  
   Users are able to click a button or link on any post to toggle whether or not they "like" that post.
+## Dependencies
+The app is built using *Django* framework. To install *Django* via terminal, use the following command.
+```sh
+$ pip3 install Django
+```
 ## Getting Started
 ### Running Locally
 To run **network** locally,
@@ -45,3 +50,12 @@ To run **network** locally,
 $ python manage.py runserver
 ```
 4. Access ```127.0.0.1:8000``` in your browser.
+### Resetting a Database
+The repo contains test database. To reset database,
+1. Delete *db.sqlite3* file.
+2. Run the following command.
+```sh
+$ python manage.py flush
+```
+## Authors
+Alexandra Baturina

@@ -8,10 +8,10 @@
         <div class="card-body body-profile">
             <div class="profile-header">
                 <i class="fa fa-user"></i>
-                <h2 class="card-title"> {{ user.username }} </h2>
+                <h2 class="card-title"> {{ username }} </h2>
             </div>
-            <p class="card-text-profile"> <strong>Joined:</strong> {{ user.date_joined }} </p>
-            <p class="card-text-profile"> <strong>Last login:</strong> {{ user.last_login }}</p>
+            <p class="card-text-profile"> <strong>Joined:</strong> {{ date_joined }} </p>
+            <p class="card-text-profile"> <strong>Last login:</strong> {{ last_login }}</p>
             <p class="card-text-profile followers"><strong>Followers:</strong> {{ followers }}</p>
             <p class="card-text-profile"><strong>Following:</strong> {{ following }} </p>
             {% if show_follow_button %}

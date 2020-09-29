@@ -115,7 +115,7 @@ def new_post(request):
                 content = request.POST.get("post-content")
                 timestamp = datetime.now()
                 add_post(request.user, content, timestamp)
-                request.session['posted'] = "Your post was successfully saved."
+                request.session['posted'] = "Your post was successfully added."
                 return HttpResponseRedirect(reverse("index"))
             else:
                 empty_post = "You are trying to submit an empty post. Please enter the content of your post."
@@ -216,7 +216,9 @@ def profile(request, username):
     page_posts = paginator.get_page(current_page)
 
     return render(request, "network/profile.html", {
-        "user": user,
+        "username": user.username,
+        "date_joined": user.date_joined,
+        "last_login": user.last_login,
         "user_posts": user_posts,
         "page_posts": page_posts,
         "following": following,

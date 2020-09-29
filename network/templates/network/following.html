@@ -3,8 +3,13 @@
 {% load static %}
 
 {% block body %}
-
-    <h3 id="following-posts"> Posts by users you are following </h3>
+    {% if posts_exist %}
+        <h3 class="following-posts"> Posts by users you are following</h3>
+    {% elif following_exists %}
+        <h3 class="following-posts"> Users you are following don't have any posts yet</h3>
+    {% else %}
+        <h3 class="following-posts"> You don't follow any users yet</h3>
+    {% endif %}
 
     {% for post in page_posts %}
         {% csrf_token %}

@@ -189,6 +189,8 @@ def following(request):
     """Render following template."""
     following_users = Following.objects.filter(user=request.user).values('following')
     posts = Post.objects.filter(user__in=following_users).order_by('-timestamp')
+    following_exists = following_users.count() > 0
+    posts_exist = posts.count() > 0
 
     for post in posts:
         post.is_liked = False
@@ -203,7 +205,9 @@ def following(request):
     return render(request, "network/following.html", {
         "posts": posts,
         "page_posts": page_posts,
-        "show_pagination": show_pagination
+        "show_pagination": show_pagination,
+        "following_exists": following_exists,
+        "posts_exist": posts_exist
     })
 
 

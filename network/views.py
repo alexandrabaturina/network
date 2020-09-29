@@ -183,8 +183,14 @@ def following(request):
             if likes.user == request.user:
                 post.is_liked = True
                 break
+
+    # Show 10 post per page
+    paginator = Paginator(posts, 10)
+    current_page = request.GET.get('page')
+    page_posts = paginator.get_page(current_page)
     return render(request, "network/following.html", {
-        "posts": posts
+        "posts": posts,
+        "page_posts": page_posts
     })
 
 
@@ -204,9 +210,15 @@ def profile(request, username):
     following = Following.objects.filter(user=user.id).count()
     followers = Following.objects.filter(following=user.id).count()
 
+    # Show 10 post per page
+    paginator = Paginator(user_posts, 10)
+    current_page = request.GET.get('page')
+    page_posts = paginator.get_page(current_page)
+
     return render(request, "network/profile.html", {
-        "username": username,
+        "user": user,
         "user_posts": user_posts,
+        "page_posts": page_posts,
         "following": following,
         "followers": followers,
         "to_follow": to_follow,

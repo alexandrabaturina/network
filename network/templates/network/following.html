@@ -6,7 +6,7 @@
 
     <h3 id="following-posts"> Posts by users you are following </h3>
 
-    {% for post in posts %}
+    {% for post in page_posts %}
         {% csrf_token %}
         <div id={{ post.id }} class="card">
             <p class="card-header"> <strong><a href="{% url 'profile' post.user %}"> {{ post.user }} </a></strong> on {{ post.timestamp }} </p>
@@ -25,6 +25,36 @@
             </div>
         </div>
     {% endfor %}
+
+    <nav aria-label="Pagination">
+        <ul class="pagination justify-content-center">
+
+            {% if page_posts.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_posts.previous_page_number }}">Previous</a></li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">Previous</span></li>
+            {% endif %}
+
+            {% for num in page_posts.paginator.page_range %}
+                {% if num == page_posts.number %}
+                    <li class="page-item active">
+                        <span class="page-link">
+                            {{ num }}
+                            <span class="sr-only">(current)</span>
+                        </span>
+                    </li>
+                {% else %}
+                    <a class="page-link" href="?page={{ num }}"> {{ num }} </a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_posts.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_posts.next_page_number }}">Next</a></li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">Next</span></li>
+            {% endif %}
+        </ul>
+    </nav>
 {% endblock %}
 
 {% block script %}
